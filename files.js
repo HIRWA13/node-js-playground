@@ -14,7 +14,7 @@ fs.writeFile('./docs/blog1.txt', newContent, ()=> {
 })
 
 
-// reading files
+// // reading files
 
 fs.readFile('./docs/blog1.txt', (err, data) => {
     if(err){
@@ -23,7 +23,34 @@ fs.readFile('./docs/blog1.txt', (err, data) => {
     console.log(data.toString())
 })
 
+
+
 // directories
+// creating and deleting folders
+
+if(!fs.existsSync('./assets')) {
+    fs.mkdir('./assets', (err) => {
+        if(err) {
+            console.log(err.message)
+        }
+        console.log('folder created successfully')
+    })
+} else {
+    fs.rmdir('./assets', (err) => {
+        if(err) {
+            console.log(err.message)
+        }
+        console.log('folder deleted successfully')
+    })
+}
 
 
 // deleting files
+if(fs.existsSync('./docs/deleteme.txt')) {
+    fs.unlink('./docs/deleteme.txt', (err) => {
+        if(err) {
+            console.log(err.message)
+        }
+        console.log('file deleted already...')
+    })
+}
