@@ -2,6 +2,7 @@
 
 // get expresss
 const express = require("express");
+const morgan = require('morgan')
 
 
 // create express app by calling the express function
@@ -13,9 +14,12 @@ app.set('view engine', 'ejs')
 // use the express function to create a server listening port number
 app.listen(3000);
 
-// app.get('/', (req, res) => {
-//     res.send('<h1>This is an express home page</h1>')
-// })
+// middlewares and static files (css, images, javascript, etc)
+
+app.use(morgan('dev'))
+
+app.use(express.static('public'))
+
 
 // use the express app to achieve routing
 
@@ -28,6 +32,7 @@ app.get("/", (req, res) => {
   ]
   res.render('index', { title: 'Home', blogs})
 });
+
 
 app.get("/about", (req, res) => {
   res.render('about', { title: 'About'})
