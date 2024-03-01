@@ -1,47 +1,80 @@
-
-
 // get expresss
 const express = require("express");
-const morgan = require('morgan')
+const morgan = require("morgan");
+const mongoose = require("mongoose");
 
+// get models
+const Blog = require('../models/blog')
 
 // create express app by calling the express function
 const app = express();
 
-// set up the view engine
-app.set('view engine', 'ejs')
+// db URI
+const DBURI =
+  "mongodb+srv://hirwa:mongotest1234@nodeblogger.mg26lzv.mongodb.net/node-tutorial?retryWrites=true&w=majority&appName=nodeBlogger";
 
-// use the express function to create a server listening port number
-app.listen(3000);
+// connect to mongoDb database
+mongoose
+  .connect(DBURI)
+  .then((result) => app.listen(3000)) // only listen to the port number when the connection to the database has already been estabished...
+  .catch((err) => console.log(err));
+
+// set up the view engine
+app.set("view engine", "ejs");
+
 
 // middlewares and static files (css, images, javascript, etc)
 
-app.use(morgan('dev'))
+app.use(morgan("dev"));
 
-app.use(express.static('public'))
+app.use(express.static("public"));
+
+
+// mongoose and mongo sandbox(test) routes
+
+// create a blog
+// app.get('/add-blog', (req, res) => {
+//   const blog = new Blog({
+//     title: 'my third blog',
+//     snippet: 'the third blog  written by me',
+//     body: 'all about my third blog that I published on node js topics'
+//   });
+
+//   blog.save().then((result) => res.send(result)).catch((err) => console.log(err))
+// })
+// // getting all blog posts
+// app.get('/all-blogs', (req, res) => {
+//   Blog.find().then((result) => res.send(result)).catch((err) => console.log(err))
+// })
+
+// // getting a single blog post
+// app.get('/single-blog', (req,res) => {
+//   Blog.findById("65e1a1fc98a9a55bf9b8bf96")
+//     .then((result) => res.send(result))
+//     .catch((err) => console.log(err));
+// })
 
 
 // use the express app to achieve routing
 
 app.get("/", (req, res) => {
-  const blogs = [
-    { title: 'first blog', snippet: 'a snippet of the first blog' },
-    { title: 'second blog', snippet: 'a snippet of the second blog'},
-    { title: 'third blog', snippet: 'a snippet of the third blog'},
-    { title: 'fourth blog', snippet: 'a snippet of the fourth blog'}
-  ]
-  res.render('index', { title: 'Home', blogs})
+ res.redirect('/blogs')
 });
 
+app.get('/blogs', (req, res) => {
+  Blog.find().sort({createdAt: -1})
+      .then((result) => res.render('index', { title: "All Blogs", blogs: result}))
+      .catch((err) => console.log(err))
+})
 
 app.get("/about", (req, res) => {
-  res.render('about', { title: 'About'})
+  res.render("about", { title: "About" });
 });
 
-app.get('/blogs/create', (req, res) => {
-  res.render('create', {title: 'Create a new Blog'})
-})
+app.get("/blogs/create", (req, res) => {
+  res.render("create", { title: "Create a new Blog" });
+});
 
 app.use((req, res) => {
-    res.status(404).render('404', {title: '404'})
-})
+  res.status(404).render("404", { title: "404" });
+});
