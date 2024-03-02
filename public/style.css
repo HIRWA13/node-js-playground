@@ -68,6 +68,29 @@
 
     /* details styles */
 
+    .details {
+      position: relative;
+    }
+
+    .delete {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 10px;
+      background: crimson;
+      color: white;
+      border-radius: 5px;
+    }
+    .delete:hover {
+      cursor: pointer;
+      box-shadow: 1px 2px 3px rgba(0,0,0, 0.2);
+      background: white;
+      border: 2px solid crimson;
+      border-radius: 5px;
+      color: crimson;
+      transition: ease-in-out .2s;
+    }
+
     /* create styles */
     .create-blog form{
       max-width: 400px;
