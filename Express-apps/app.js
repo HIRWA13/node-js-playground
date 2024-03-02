@@ -3,15 +3,21 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 
+require("dotenv").config();
+
+
+// const blogRoutes = require('../routes/blogRoutes')
+
+const mainRoute = require('../routes/routes')
+
 // get models
-const Blog = require('../models/blog')
+// const Blog = require('../models/blog')
 
 // create express app by calling the express function
 const app = express();
 
 // db URI
-const DBURI =
-  "mongodb+srv://hirwa:mongotest1234@nodeblogger.mg26lzv.mongodb.net/node-tutorial?retryWrites=true&w=majority&appName=nodeBlogger";
+const DBURI = process.env.DBURI;
 
 // connect to mongoDb database
 mongoose
@@ -63,40 +69,13 @@ app.get("/", (req, res) => {
  res.redirect('/blogs')
 });
 
-app.get('/blogs', (req, res) => {
-  Blog.find().sort({createdAt: -1})
-      .then((result) => res.render('index', { title: "All Blogs", blogs: result}))
-      .catch((err) => console.log(err))
-});
-
-
-// create a new blog
-app.post('/blogs', (req, res) => {
-  const blog = new Blog(req.body)
-
-  blog.save()
-      .then((result) => res.redirect('/blogs'))
-      .catch((err) => console.log(err))
-})
-
-// get a single blog based on its id
-
-app.get('/blogs/:id', (req, res) => {
-  const id = req.params.id
-  Blog.findById(id)
-      .then((result) => {
-        res.render('details', {blog: result, title: result.title})
-      })
-      .catch((err) => console.log(err))
-})
 
 app.get("/about", (req, res) => {
   res.render("about", { title: "About" });
 });
 
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Create a new Blog" });
-});
+
+app.use(mainRoute)
 
 app.use((req, res) => {
   res.status(404).render("404", { title: "404" });
